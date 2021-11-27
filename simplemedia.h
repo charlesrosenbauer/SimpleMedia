@@ -39,4 +39,23 @@ typedef struct{
 }SM_Vid_Header;
 
 
+typedef struct{
+	uint8_t		blocktype;
+	uint8_t		paddingA;		// Find some other data to store here
+	uint16_t	paddingB;		// ...
+	
+	uint32_t	size;
+	uint64_t	byteTable[4];
+}SM_BitTable;
+
+typedef struct{
+	uint8_t		blocktype;
+	uint8_t		offset;
+	uint8_t		range;
+	uint8_t		padding;
+	
+	uint32_t	size;
+}SM_BitRange
+
+
 #endif
