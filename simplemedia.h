@@ -58,4 +58,27 @@ typedef struct{
 }SM_BitRange
 
 
+
+/*
+	Repeat last pixel N times. N = len + bottom 5 bits of key
+*/
+typedef struct{
+	uint8_t		key;	
+	uint8_t		len;
+}SM_Img_RLE;
+
+
+/*
+	Repeat last pixel N times, with increment added each time.
+	N     = len
+	delta = bottom 5 bits of key
+*/
+typedef struct{
+	uint8_t		key;
+	uint8_t		len;
+}SM_Img_Delta_RLE;
+
+
+
+
 #endif
