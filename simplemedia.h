@@ -7,9 +7,12 @@
 
 typedef struct{
 	uint32_t	magic;
-	uint32_t	h, w, framect;
+	uint32_t	h, w;
 	uint64_t	fsize;
-	uint64_t	blockct;
+	uint64_t	rBlocks;
+	uint64_t	gBlocks;
+	uint64_t	bBlocks;
+	uint64_t	aBlocks;
 }SM_Img_Header;
 
 
@@ -55,30 +58,29 @@ typedef struct{
 	uint8_t		padding;
 	
 	uint32_t	size;
-}SM_BitRange
+}SM_BitRange;
 
 
 
-/*
-	Repeat last pixel N times. N = len + bottom 5 bits of key
-*/
-typedef struct{
-	uint8_t		key;	
-	uint8_t		len;
-}SM_Img_RLE;
+
+typedef enum{
+	SMIT_RAW	= 0x0000,		// Up to 2 ^ 8+5 raw bytes
+	SMIT_HRLE	= 0x2000,		// Up to 2 ^ 8+5 bytes equal to previous byte
+	SMIT_VRLE	= 0x4000,		// Up to 2 ^ 8+5 bytes equal to above byte
+	SMIT_HDF3	= 0x6000,		// Up to 2 ^ 8+5 3-bit segments of +/- deltas from previous byte
+	SMIT_VDF3	= 0x8000,		// Up to 2 ^ 8+5 3-bit segments of +/- deltas from above byte
+	SMIT_HDF5	= 0xA000,		// Up to 2 ^ 8+5 5-bit segments of +/- deltas from previous byte
+	SMIT_VDF5	= 0xC000,		// Up to 2 ^ 8+5 5-bit segments of +/- deltas from above byte
+	SMIT_PALT	= 0xE000,		// Up to 2 ^ 8+5 4-bit segments of indices into previous bytes
+	
+	SMIT_MASK	= 0xE000,
+	SMIT_LEN	= 0x1FFF
+}SM_Img_BlockType;
+
+typedef uint16_t SM_Img_Block;
 
 
-/*
-	Repeat last pixel N times, with increment added each time.
-	N     = len
-	delta = bottom 5 bits of key
-*/
-typedef struct{
-	uint8_t		key;
-	uint8_t		len;
-}SM_Img_Delta_RLE;
-
-
+int encodeImage(uint32_t*, int, int, SM_Img_Header*, void*);
 
 
 #endif
