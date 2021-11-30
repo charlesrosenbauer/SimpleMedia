@@ -13,6 +13,9 @@ File formats include:
 This project is currently in an exploratory mode. Nothing is finalized yet, and formats may change substantially.
 
 Current plan:
-* Use simple encoding strategies like RLE, difference encodings, etc.
+* Use simple encoding strategies like RLE, difference encodings, frame deltas, etc.
+* Separate RBGA channels, encode separately, plus grayscale channel
 * Compress blocks of encodings with secondary compression: bit packing, bit tables, etc.
 * Provide some support for lossy compression
+	* detail thresholds
+	* reduced hue bit depth
