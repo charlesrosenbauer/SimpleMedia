@@ -13,6 +13,7 @@ typedef struct{
 	uint64_t	gBlocks;
 	uint64_t	bBlocks;
 	uint64_t	aBlocks;
+	uint64_t	lBlocks;
 }SM_Img_Header;
 
 
