@@ -25,6 +25,13 @@ inline int ctEqlMsg(uint8_t a, uint8_t b, int* ct, int k, char* msg){
 	return  (a != b)? c-1 : 0;
 }
 
+inline uint8_t gray(uint32_t p){
+	uint32_t r = (p >> 16) & 0xff;
+	uint32_t g = (p >>  8) & 0xff;
+	uint32_t b = (p      ) & 0xff;
+	return (r + g + b) / 3;
+}
+
 
 int encodeImage(uint32_t* px, int h, int w, SM_Img_Header* hd, void* buffer){
 	
@@ -39,34 +46,56 @@ int encodeImage(uint32_t* px, int h, int w, SM_Img_Header* hd, void* buffer){
 	int runVG = 0;
 	int runHB = 0;
 	int runVB = 0;
+	int runHL = 0;
+	int runVL = 0;
 	
+	SM_Img_Block* rbs = malloc(sizeof(SM_Img_Block) * rlen);
+	SM_Img_Block* gbs = malloc(sizeof(SM_Img_Block) * rlen);
+	SM_Img_Block* bbs = malloc(sizeof(SM_Img_Block) * rlen);
+	SM_Img_Block* abs = malloc(sizeof(SM_Img_Block) * rlen);
+	SM_Img_Block* lbs = malloc(sizeof(SM_Img_Block) * rlen);
+	int rbct = 0;
+	int gbct = 0;
+	int bbct = 0;
+	int abct = 0;
+	int lbct = 0;
 	
-	
-	uint8_t ha = 0, hr = 0, hg = 0, hb = 0;
-	uint8_t va = 0, vr = 0, vg = 0, vb = 0;
+	uint8_t ha = 0, hr = 0, hg = 0, hb = 0, hl = 0;
+	uint8_t va = 0, vr = 0, vg = 0, vb = 0, vl = 0;
 	for(int i = 0; i < size; i++){
 		uint32_t p = px[i];
-		uint8_t  r, g, b, a;
+		uint8_t  r, g, b, a, l;
 		splitRGBA(p, &r, &g, &b, &a);
+		l = gray (p);
 	
 		if(i > w){
 			splitRGBA(px[i-w], &vr, &vg, &vb, &va);
+			vl = gray(px[i-w]);
 		}
 		
 		ctEqlMsg(a, ha, &runHA, 5, "HA Run");
 		ctEqlMsg(r, hr, &runHR, 5, "HR Run");
 		ctEqlMsg(g, hg, &runHG, 5, "HG Run");
 		ctEqlMsg(b, hb, &runHB, 5, "HB Run");
+		ctEqlMsg(l, hl, &runHL, 5, "HL Run");
 		ctEqlMsg(a, va, &runVA, 5, "VA Run");
 		ctEqlMsg(r, vr, &runVR, 5, "VR Run");
 		ctEqlMsg(g, vg, &runVG, 5, "VG Run");
 		ctEqlMsg(b, vb, &runVB, 5, "VB Run");
+		ctEqlMsg(l, vl, &runVL, 5, "VL Run");
 	
 		ha = a;
 		hr = r;
 		hg = g;
 		hb = b;
+		hl = l;
 	}
+	
+	free(rbs);
+	free(gbs);
+	free(bbs);
+	free(abs);
+	free(lbs);
 	
 	return rlen;
 }
