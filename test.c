@@ -13,11 +13,14 @@
 
 int main(){
 	SDL_Init(SDL_INIT_EVERYTHING);
-	SDL_Surface* image  = SDL_LoadBMP("media/009.bmp");
+	SDL_Surface* image  = SDL_LoadBMP("media/00f.bmp");
 	SDL_Surface* screen = SDL_SetVideoMode(image->w, image->h, 32, 0);
 	SDL_BlitSurface(image, 0, screen, 0);
 	
-	pixVAbsDiff(screen->pixels, screen->pixels, image->h, image->w);
+	uint32_t* px = malloc(sizeof(uint32_t) * image->w * image->h);
+	for(int i = 0; i < image->w * image->h; i++) px[i] = ((uint32_t*)screen->pixels)[i];
+	
+	pixHDiff(px, screen->pixels, image->h, image->w);
 	
 	SDL_Flip(screen);
 	SDL_Delay(15000);
@@ -30,6 +33,7 @@ int main(){
 	uint32_t* pixels = screen->pixels;
 	
 	int ct = encodeImage(pixels, image->h, image->w, NULL, NULL);
+	printf("CT=%i\n", ct);
 	
 	/*
 	for(int i = 0; i < pxct; i++){
