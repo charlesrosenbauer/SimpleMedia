@@ -60,7 +60,10 @@ int decompress(uint32_t* buffer, int size, uint8_t** out){
 	if((head->blockct + head->blockct + head->rawsize + sizeof(CompressHeader)) > size) return -1;
 	
 	*out = malloc( sizeof(uint8_t) * head->outsize);
-	uint16_t* blocks = &((uint16_t*)buffer)[sizeof(CompressHeader) / 2];
+	
+	uint8_t*  file   = *out;
+	uint16_t* blocks = &((uint16_t*)buffer)[ sizeof(CompressHeader) / 2];
+	uint8_t * bytes  = &((uint8_t* )buffer)[(sizeof(CompressHeader) / 4) + (2 * head->blockct)];
 	
 	int rawIx = 0;
 	int outIx = 0;
@@ -68,7 +71,21 @@ int decompress(uint32_t* buffer, int size, uint8_t** out){
 		int             len = blocks[i] >>  4;
 		CompressorMode mode = blocks[i] & 0xf;
 		switch(mode){
-			// TODO: Fill this out
+			case MD_RLE : {
+				for(int i = 0; i < len; i++){
+					file[rawIx] = bytes[outIx];
+					rawIx++;
+				}
+				outIx++;
+			}break;
+			
+			case MD_RDE : {
+				for(int i = 0; i < len; i++){
+					file[rawIx] = file[rawIx-1] + bytes[outIx];
+					rawIx++;
+				}
+				outIx++;
+			}break;
 		}
 	}
 	
