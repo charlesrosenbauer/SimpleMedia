@@ -24,6 +24,36 @@ int loadFile(char* fname, char** buffer, int64_t* fsize){
 }
 
 
+typedef enum{
+	MD_RLE		= 0x0,	// Run length encoding
+	MD_RDE		= 0x1,	// Run delta  encoding
+	MD_1BB		= 0x2,	// 1 bit bytes
+	MD_1BD		= 0x3,	// 1 bit deltas
+	MD_2BB		= 0x4,	// 2 bit bytes
+	MD_2BD		= 0x5,	// 2 bit deltas
+	MD_3BB		= 0x6,	// 3 bit bytes
+	MD_3BD		= 0x7,	// 3 bit deltas
+	MD_4BB		= 0x8,	// 4 bit bytes
+	MD_4BD		= 0x9,	// 4 bit deltas
+	MD_A		= 0xA,	// Placeholder
+	MD_B		= 0xB,
+	MD_C		= 0xC,
+	MD_D		= 0xD,
+	MD_E		= 0xE,
+	MD_RAW		= 0xF	// Raw bytes
+}CompressorMode;
+
+typedef struct{
+	uint32_t	blockct;
+	uint32_t	rawsize;
+	// u16 blocks after this : 12b size + 4b mode
+	// u8  bytes  after that : raw data bytes
+	// One nice thing about this approach is that it should be possible to
+	// thread this pretty efficiently. Just iterate over blocks, spawning
+	// threads, and keeping track of where each block starts.
+}CompressHeader;
+
+
 int main(int argc, char** args){
 	for(int f = 1; f < argc; f++){
 		char*    file;
