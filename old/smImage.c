@@ -5,27 +5,27 @@
 #include "simplemedia.h"
 
 
-inline void splitRGBA(uint32_t p, uint8_t* r, uint8_t* g, uint8_t* b, uint8_t* a){
+void splitRGBA(uint32_t p, uint8_t* r, uint8_t* g, uint8_t* b, uint8_t* a){
 	*a = p >> 24;
 	*r = p >> 16;
 	*g = p >>  8;
 	*b = p;
 }
 
-inline int countEql(uint8_t a, uint8_t b, int* ct){
+int countEql(uint8_t a, uint8_t b, int* ct){
 	int c = *ct;
 	*ct   = (a == b)? c+1 : 0;
 	return  (a != b)? c-1 : 0;
 }
 
-inline int ctEqlMsg(uint8_t a, uint8_t b, int* ct, int k, char* msg){
+int ctEqlMsg(uint8_t a, uint8_t b, int* ct, int k, char* msg){
 	int c = *ct;
 	if     ((a != b) && (c >= k)) printf("%s %i\n", msg, c);
 	*ct   = (a == b)? c+1 : 0;
 	return  (a != b)? c-1 : 0;
 }
 
-inline uint8_t gray(uint32_t p){
+uint8_t gray(uint32_t p){
 	uint32_t r = (p >> 16) & 0xff;
 	uint32_t g = (p >>  8) & 0xff;
 	uint32_t b = (p      ) & 0xff;
