@@ -46,12 +46,34 @@ typedef enum{
 typedef struct{
 	uint32_t	blockct;
 	uint32_t	rawsize;
+	uint32_t	outsize;
 	// u16 blocks after this : 12b size + 4b mode
 	// u8  bytes  after that : raw data bytes
 	// One nice thing about this approach is that it should be possible to
 	// thread this pretty efficiently. Just iterate over blocks, spawning
 	// threads, and keeping track of where each block starts.
 }CompressHeader;
+
+
+int decompress(uint32_t* buffer, int size, uint8_t** out){
+	CompressHeader* head = (CompressHeader*)buffer;
+	if((head->blockct + head->blockct + head->rawsize + sizeof(CompressHeader)) > size) return -1;
+	
+	*out = malloc( sizeof(uint8_t) * head->outsize);
+	uint16_t* blocks = &((uint16_t*)buffer)[sizeof(CompressHeader) / 2];
+	
+	int rawIx = 0;
+	int outIx = 0;
+	for(int i = 0; i < head->blockct; i++){
+		int             len = blocks[i] >>  4;
+		CompressorMode mode = blocks[i] & 0xf;
+		switch(mode){
+			// TODO: Fill this out
+		}
+	}
+	
+	return head->outsize;
+}
 
 
 int main(int argc, char** args){
